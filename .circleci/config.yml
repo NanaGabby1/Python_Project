@@ -18,11 +18,14 @@ workflows:
 jobs:
   build-and-test:
     docker:
-      - image: cimg/python:3.10.5
+      - image: cimg/python:3.10.7
     steps:
       - checkout
       - python/install-packages:
           pkg-manager: pip
       - run:
+          name: install pytest
+          command: install pytest
+      -run:
           name: Run tests
           command: pytest
