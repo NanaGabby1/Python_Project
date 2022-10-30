@@ -1,21 +1,25 @@
-version: 2 # CircleCI version
+version: 2.1
 jobs:
-  build: # name of this job
-    docker: # executor
-      - image: cimg/python:3.9.2 # Docker image(CircleCI authored) version
+  reun_tests:
+    docker:
+      - image: cimg/python:3.7.4
 
     steps:
-      - checkout # Retrieve code from GitHub
-      # Create a venv, activate it, then install the pip packages
+      - checkout
       - run:
-          name: Install pip packages # name of this action
+          name: Install python dependencies
           command: |
-            python3 -m venv venv
-            . venv/bin/activate
+            echo 'export PATH=~$PATH:~/.local.bin' >> $BASH_ENV && source SBASH_ENV
             pip install -r requirements.txt
-      # run tests using pytest in verbose mode
       - run:
-          name: Test with pytest
-          command: |
-            . venv/bin/activate
-            pytest -v
+          name: Run Unit Test
+          command:
+            pytest --junitxml=test-reports/junit.xml --html=test-reports/pytest_report.html --self-contained-html
+      - store:_test_results:
+          path: test-reports
+      - store_artifacts:
+          path: test-reports
+workflows:
+  build_tests:
+    jobs:
+      - run_tests
