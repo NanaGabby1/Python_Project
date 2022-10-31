@@ -3,19 +3,18 @@ jobs:
   run_tests:
     docker:
       - image: cimg/python:3.7.4
-
     steps:
       - checkout
       - run:
           name: Install python dependencies
           command: |
-            echo 'export PATH=~$PATH:~/.local.bin' >> $BASH_ENV && source SBASH_ENV
+            echo 'export PATH=~$PATH:~/.local/bin' >> $BASH_ENV && source SBASH_ENV
             pip install -r requirements.txt
       - run:
           name: Run Unit Test
           command:
             pytest --junitxml=test-reports/junit.xml --html=test-reports/pytest_report.html --self-contained-html
-      - store:_test_results:
+      - store_test_results:
           path: test-reports
       - store_artifacts:
           path: test-reports
